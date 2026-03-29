@@ -52,6 +52,8 @@ const NotebookNotes = ({ content }: NotebookNotesProps) => {
 
         <div className="prose prose-sm max-w-none text-xl leading-[32px]">
           <ReactMarkdown
+            remarkPlugins={[remarkMath]}
+            rehypePlugins={[rehypeKatex]}
             components={{
               h1: ({ children }) => <h1 className="text-3xl font-bold text-gray-800 mb-2 font-handwriting underline decoration-neon-pink/30">{children}</h1>,
               h2: ({ children }) => <h2 className="text-2xl font-semibold text-gray-700 mt-4 mb-2 font-handwriting highlight-green">{children}</h2>,
