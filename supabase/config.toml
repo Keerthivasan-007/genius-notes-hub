@@ -2,4 +2,3 @@ project_id = "gzwaqadrtttvefbknauq"
 
 [functions.synthesize]
 verify_jwt = false
-enabled = true
