@@ -32,7 +32,7 @@ const Flashcards = ({ cards }: { cards: Flashcard[] }) => {
           >
             {/* Front */}
             <div className="absolute inset-0 glass-strong gradient-border rounded-xl p-6 flex items-center justify-center text-center backface-hidden">
-              <p className="text-sm font-medium">{card.front}</p>
+              <div className="text-sm font-medium"><ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>{card.front}</ReactMarkdown></div>
             </div>
             {/* Back */}
             <div
