@@ -24,6 +24,12 @@ Your job:
 6. Generate flashcards (question on front, answer on back) based ONLY on source content.
 7. Generate quiz questions with 4 options, marking the correct answer index (0-3), difficulty (easy/medium/tricky), and common errors students make — all derived from the uploaded material.
 
+FORMATTING RULES:
+- Use standard Markdown formatting. Keep text clean and readable.
+- For mathematical symbols and formulas, use LaTeX notation: inline math with $...$ and display math with $$...$$.
+- Examples: $E = mc^2$, $\\frac{a}{b}$, $\\sum_{i=1}^{n} x_i$, $\\alpha$, $\\beta$, $\\theta$.
+- Do NOT use raw Unicode math symbols or ASCII approximations. Always use LaTeX.
+
 You MUST respond using the suggest_study_materials tool.`;
 
 // Helper to encode ArrayBuffer to base64 (Deno compatible)
