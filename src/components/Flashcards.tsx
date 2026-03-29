@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 
 interface Flashcard {
   front: string;
@@ -28,14 +32,14 @@ const Flashcards = ({ cards }: { cards: Flashcard[] }) => {
           >
             {/* Front */}
             <div className="absolute inset-0 glass-strong gradient-border rounded-xl p-6 flex items-center justify-center text-center backface-hidden">
-              <p className="text-sm font-medium">{card.front}</p>
+              <div className="text-sm font-medium"><ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>{card.front}</ReactMarkdown></div>
             </div>
             {/* Back */}
             <div
               className="absolute inset-0 rounded-xl p-6 flex items-center justify-center text-center backface-hidden"
               style={{ transform: "rotateY(180deg)", background: "linear-gradient(135deg, hsl(152 100% 50% / 0.3), hsl(330 100% 60% / 0.3))", backgroundColor: "hsl(var(--card))" }}
             >
-              <p className="text-sm text-foreground">{card.back}</p>
+              <div className="text-sm text-foreground"><ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>{card.back}</ReactMarkdown></div>
             </div>
           </motion.div>
         </motion.div>

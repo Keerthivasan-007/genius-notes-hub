@@ -4,6 +4,9 @@ import NotebookNotes from "./NotebookNotes";
 import Flashcards from "./Flashcards";
 import QuizSystem from "./QuizSystem";
 import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 
 interface SynthResult {
   master_notes: string;
@@ -43,7 +46,7 @@ const ResultsDashboard = ({ result }: { result: SynthResult }) => {
       <TabsContent value="summary" className="mt-6">
         <div className="glass-strong gradient-border rounded-2xl p-8">
           <div className="prose prose-invert prose-sm max-w-none">
-            <ReactMarkdown>{result.summary}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>{result.summary}</ReactMarkdown>
           </div>
         </div>
       </TabsContent>

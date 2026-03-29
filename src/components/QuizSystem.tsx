@@ -3,6 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Clock, AlertTriangle, CheckCircle, XCircle, Trophy } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 
 interface QuizQuestion {
   question: string;
@@ -80,7 +84,7 @@ const QuizSystem = ({ questions }: QuizSystemProps) => {
               <div className="flex items-start gap-3">
                 {answers[i] === qq.correct ? <CheckCircle className="w-5 h-5 text-neon-green shrink-0 mt-0.5" /> : <XCircle className="w-5 h-5 text-neon-pink shrink-0 mt-0.5" />}
                 <div>
-                  <p className="text-sm font-medium">{qq.question}</p>
+                  <div className="text-sm font-medium"><ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>{qq.question}</ReactMarkdown></div>
                   {answers[i] !== qq.correct && (
                     <p className="text-xs text-neon-green mt-1">Correct: {qq.options[qq.correct]}</p>
                   )}
@@ -116,7 +120,7 @@ const QuizSystem = ({ questions }: QuizSystemProps) => {
 
       <AnimatePresence mode="wait">
         <motion.div key={current} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}>
-          <p className="text-lg font-semibold mb-4">{q.question}</p>
+          <div className="text-lg font-semibold mb-4"><ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>{q.question}</ReactMarkdown></div>
           <div className="space-y-3">
             {q.options.map((opt, i) => (
               <motion.button
@@ -128,7 +132,7 @@ const QuizSystem = ({ questions }: QuizSystemProps) => {
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
               >
-                <span className="text-sm">{opt}</span>
+                <span className="text-sm"><ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>{opt}</ReactMarkdown></span>
               </motion.button>
             ))}
           </div>
