@@ -167,7 +167,7 @@ serve(async (req) => {
 
     parts.push({
       type: "text",
-      text: "Please synthesize all the above notes into comprehensive study materials. Use the suggest_study_materials tool to return structured results.",
+      text: "Synthesize ONLY the content from the above uploaded files into study materials. Do NOT add any external information. Use the suggest_study_materials tool to return structured results.",
     });
 
     console.log(`Processing ${files.length} files, total parts: ${parts.length}`);
