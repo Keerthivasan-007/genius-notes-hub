@@ -132,7 +132,7 @@ const QuizSystem = ({ questions }: QuizSystemProps) => {
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
               >
-                <span className="text-sm">{opt}</span>
+                <span className="text-sm"><ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>{opt}</ReactMarkdown></span>
               </motion.button>
             ))}
           </div>
