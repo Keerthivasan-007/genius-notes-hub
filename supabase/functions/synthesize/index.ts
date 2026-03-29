@@ -320,8 +320,21 @@ serve(async (req) => {
       );
     }
 
-    const aiResult = await response.json();
-    console.log("AI response received, extracting tool call...");
+    const rawText = await response.text();
+    console.log("AI response received, length:", rawText.length);
+
+    let aiResult: any;
+    try {
+      aiResult = JSON.parse(rawText);
+    } catch (parseErr) {
+      console.error("Failed to parse AI gateway response:", rawText.substring(0, 500));
+      return new Response(
+        JSON.stringify({ error: "AI returned an invalid response. Try with a smaller file or fewer pages." }),
+        { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log("AI response parsed, extracting tool call...");
 
     const toolCall = aiResult.choices?.[0]?.message?.tool_calls?.[0];
 
