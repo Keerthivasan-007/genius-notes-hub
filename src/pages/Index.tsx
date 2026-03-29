@@ -67,7 +67,6 @@ const Index = () => {
       });
 
       if (error) {
-        // Handle specific HTTP error codes
         const status = (error as any)?.status || (error as any)?.context?.status;
         if (status === 429) {
           toast({ title: "Rate Limited", description: "Too many requests. Please wait a moment and try again.", variant: "destructive" });
@@ -75,6 +74,10 @@ const Index = () => {
         }
         if (status === 402) {
           toast({ title: "Credits Exhausted", description: "AI credits have run out. Please add funds in workspace settings.", variant: "destructive" });
+          return;
+        }
+        if (status === 413) {
+          toast({ title: "Files Too Large", description: "Total file size is too large. Try smaller files or fewer pages.", variant: "destructive" });
           return;
         }
         throw error;
