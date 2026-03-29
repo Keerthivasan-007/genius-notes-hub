@@ -37,10 +37,9 @@ const Index = () => {
       return;
     }
 
-    // Validate file sizes
     const oversized = files.find(f => f.size > MAX_FILE_SIZE);
     if (oversized) {
-      toast({ title: "File too large", description: `"${oversized.name}" exceeds 10MB limit.`, variant: "destructive" });
+      toast({ title: "File too large", description: `"${oversized.name}" exceeds 50MB limit.`, variant: "destructive" });
       return;
     }
 
@@ -48,22 +47,29 @@ const Index = () => {
     setResult(null);
 
     try {
-      // Read all files as base64
-      const fileData = await Promise.all(
-        files.map(async (f) => {
-          const buffer = await f.arrayBuffer();
-          const bytes = new Uint8Array(buffer);
-          let binary = "";
-          for (let i = 0; i < bytes.length; i++) {
-            binary += String.fromCharCode(bytes[i]);
+      // Generate a unique session ID for this upload batch
+      const sessionId = crypto.randomUUID();
+
+      // Upload all files to storage
+      const uploadedFiles = await Promise.all(
+        files.map(async (f, idx) => {
+          const safeName = f.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+          const path = `uploads/${sessionId}/${idx}-${safeName}`;
+          const { error: uploadError } = await supabase.storage
+            .from("processing-uploads")
+            .upload(path, f, { cacheControl: "3600", upsert: false });
+
+          if (uploadError) {
+            throw new Error(`Failed to upload "${f.name}": ${uploadError.message}`);
           }
-          const base64 = btoa(binary);
-          return { name: f.name, type: f.type, data: base64 };
+
+          return { name: f.name, type: f.type, path, size: f.size };
         })
       );
 
+      // Call edge function with file metadata (no base64 in body)
       const { data, error } = await supabase.functions.invoke("synthesize", {
-        body: { files: fileData },
+        body: { files: uploadedFiles, sessionId },
       });
 
       if (error) {

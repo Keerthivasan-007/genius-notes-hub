@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      processing_jobs: {
+        Row: {
+          access_token: string
+          completed_at: string | null
+          created_at: string
+          error_message: string | null
+          file_count: number
+          id: string
+          progress: number
+          result: Json | null
+          status: string
+          total_size_bytes: number
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          access_token?: string
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          file_count?: number
+          id?: string
+          progress?: number
+          result?: Json | null
+          status?: string
+          total_size_bytes?: number
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          access_token?: string
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          file_count?: number
+          id?: string
+          progress?: number
+          result?: Json | null
+          status?: string
+          total_size_bytes?: number
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
