@@ -120,7 +120,7 @@ const QuizSystem = ({ questions }: QuizSystemProps) => {
 
       <AnimatePresence mode="wait">
         <motion.div key={current} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}>
-          <p className="text-lg font-semibold mb-4">{q.question}</p>
+          <div className="text-lg font-semibold mb-4"><ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>{q.question}</ReactMarkdown></div>
           <div className="space-y-3">
             {q.options.map((opt, i) => (
               <motion.button
