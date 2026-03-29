@@ -84,7 +84,7 @@ const QuizSystem = ({ questions }: QuizSystemProps) => {
               <div className="flex items-start gap-3">
                 {answers[i] === qq.correct ? <CheckCircle className="w-5 h-5 text-neon-green shrink-0 mt-0.5" /> : <XCircle className="w-5 h-5 text-neon-pink shrink-0 mt-0.5" />}
                 <div>
-                  <p className="text-sm font-medium">{qq.question}</p>
+                  <div className="text-sm font-medium"><ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>{qq.question}</ReactMarkdown></div>
                   {answers[i] !== qq.correct && (
                     <p className="text-xs text-neon-green mt-1">Correct: {qq.options[qq.correct]}</p>
                   )}

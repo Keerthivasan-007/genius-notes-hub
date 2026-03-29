@@ -46,7 +46,7 @@ const ResultsDashboard = ({ result }: { result: SynthResult }) => {
       <TabsContent value="summary" className="mt-6">
         <div className="glass-strong gradient-border rounded-2xl p-8">
           <div className="prose prose-invert prose-sm max-w-none">
-            <ReactMarkdown>{result.summary}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>{result.summary}</ReactMarkdown>
           </div>
         </div>
       </TabsContent>
