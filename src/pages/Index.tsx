@@ -23,7 +23,7 @@ interface SynthResult {
   }[];
 }
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB per file
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB per file
 
 const Index = () => {
   const [files, setFiles] = useState<File[]>([]);

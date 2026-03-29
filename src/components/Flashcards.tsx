@@ -32,8 +32,8 @@ const Flashcards = ({ cards }: { cards: Flashcard[] }) => {
             </div>
             {/* Back */}
             <div
-              className="absolute inset-0 glass-strong rounded-xl p-6 flex items-center justify-center text-center backface-hidden"
-              style={{ transform: "rotateY(180deg)", background: "linear-gradient(135deg, hsl(152 100% 50% / 0.1), hsl(330 100% 60% / 0.1))" }}
+              className="absolute inset-0 rounded-xl p-6 flex items-center justify-center text-center backface-hidden"
+              style={{ transform: "rotateY(180deg)", background: "linear-gradient(135deg, hsl(152 100% 50% / 0.3), hsl(330 100% 60% / 0.3))", backgroundColor: "hsl(var(--card))" }}
             >
               <p className="text-sm text-foreground">{card.back}</p>
             </div>
