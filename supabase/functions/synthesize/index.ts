@@ -58,6 +58,16 @@ serve(async (req) => {
       );
     }
 
+    // Check total payload size — base64 data over ~15MB can cause gateway timeouts
+    const totalDataSize = files.reduce((sum: number, f: any) => sum + (f.data?.length || 0), 0);
+    console.log("Total base64 data size:", (totalDataSize / 1024 / 1024).toFixed(2), "MB");
+    if (totalDataSize > 20 * 1024 * 1024) {
+      return new Response(
+        JSON.stringify({ error: "Total file data too large. Please upload smaller files or fewer pages (max ~15MB total)." }),
+        { status: 413, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       console.error("LOVABLE_API_KEY is not set");
