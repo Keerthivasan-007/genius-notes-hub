@@ -13,13 +13,14 @@ Without intelligent note synthesis and automated study material generation, stud
  >Poor exam preparation
 
 NoteForge solves this by transforming messy notes into structured, synthesized study materials—condensed summaries, flashcards, and quizzes—helping students reclaim study time and actually learn.
-https://github.com/user-attachments/assets/29c2aab0-6018-4c51-ad01-bee184f8272a
  What You Can Do
 > Upload lecture notes (PDFs, images, handwritten, or text)
 > Synthesize them into condensed study guides
 > Generate flashcards automatically
 > Create quizzes for self-assessment
 > Study smarter with AI-powered learning tools
+> https://github.com/user-attachments/assets/29c2aab0-6018-4c51-ad01-bee184f8272a
+
 ---
 
 ## Tech Stack
