@@ -9,17 +9,20 @@ const corsHeaders = {
 
 const SYSTEM_PROMPT = `You are an expert educational content synthesizer. You receive extracted text from student notes (from PDFs, images, presentations, documents).
 
+CRITICAL RULES:
+- You MUST base ALL output EXCLUSIVELY on the content provided in the uploaded files. 
+- Do NOT add any information, facts, definitions, or explanations that are not present or directly implied in the source material.
+- Do NOT hallucinate or fabricate content. If the source material is thin, produce shorter output rather than inventing details.
+- If you cannot extract meaningful text from a file, say so explicitly in the master_notes.
+
 Your job:
 1. Merge overlapping content from multiple sources into comprehensive master notes.
-2. Identify and highlight common keywords and concepts.
-3. Detect and correct factual mistakes.
-4. Fill conceptual gaps with brief, accurate explanations.
-5. Remove irrelevant content and fluff.
-6. Create a concise summary with key formulas/metrics.
-7. Generate flashcards (question on front, answer on back).
-8. Generate quiz questions with 4 options, marking the correct answer index (0-3), difficulty (easy/medium/tricky), and common errors students make.
-
-IMPORTANT: Base ALL content strictly on the uploaded notes. Do not hallucinate or add information not present or directly implied by the source material. You may add brief clarifying context but always ground it in the source.
+2. Identify and highlight common keywords and concepts found IN THE SOURCES.
+3. Detect and correct factual mistakes ONLY when clearly wrong based on the source context.
+4. Remove irrelevant content and fluff.
+5. Create a concise summary with key formulas/metrics FROM THE SOURCES.
+6. Generate flashcards (question on front, answer on back) based ONLY on source content.
+7. Generate quiz questions with 4 options, marking the correct answer index (0-3), difficulty (easy/medium/tricky), and common errors students make — all derived from the uploaded material.
 
 You MUST respond using the suggest_study_materials tool.`;
 
@@ -85,24 +88,62 @@ serve(async (req) => {
     // Build content parts for the AI message
     const parts: any[] = [];
 
+    // Determine file type and build appropriate content parts
     for (const file of files) {
+      const nameLower = file.name.toLowerCase();
       const isImage =
         file.type?.startsWith("image/") ||
-        /\.(jpg|jpeg|png)$/i.test(file.name);
+        /\.(jpg|jpeg|png|gif|webp)$/i.test(nameLower);
+      const isPdf =
+        file.type === "application/pdf" || nameLower.endsWith(".pdf");
+      const isBinaryDoc =
+        /\.(pptx|docx|xlsx)$/i.test(nameLower) ||
+        file.type?.includes("officedocument") ||
+        file.type?.includes("presentation") ||
+        file.type?.includes("wordprocessing");
 
       if (isImage) {
+        // Images: send as inline image for OCR
         const mimeType =
           file.type ||
-          (file.name.endsWith(".png") ? "image/png" : "image/jpeg");
+          (nameLower.endsWith(".png") ? "image/png" : "image/jpeg");
         parts.push({
           type: "image_url",
           image_url: { url: `data:${mimeType};base64,${file.data}` },
         });
         parts.push({
           type: "text",
-          text: `[Image file: ${file.name} - Please OCR and extract all text, handwriting, diagrams, and formulas from this image]`,
+          text: `[Image file: ${file.name} - Extract ALL text, handwriting, diagrams, and formulas from this image. Base your output ONLY on what you see in this image.]`,
+        });
+      } else if (isPdf) {
+        // PDFs: send as inline document — Gemini can read PDFs natively
+        parts.push({
+          type: "image_url",
+          image_url: { url: `data:application/pdf;base64,${file.data}` },
+        });
+        parts.push({
+          type: "text",
+          text: `[PDF file: ${file.name} - Extract and use ALL text and content from this PDF. Base your output ONLY on the content in this document.]`,
+        });
+      } else if (isBinaryDoc) {
+        // PPTX/DOCX/XLSX: attempt to send as binary inline
+        const mimeMap: Record<string, string> = {
+          ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+          ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        };
+        const ext = nameLower.substring(nameLower.lastIndexOf("."));
+        const mimeType = file.type || mimeMap[ext] || "application/octet-stream";
+        parts.push({
+          type: "image_url",
+          image_url: { url: `data:${mimeType};base64,${file.data}` },
+        });
+        parts.push({
+          type: "text",
+          text: `[Document file: ${file.name} - Extract ALL text, slides, and content from this document. Base your output ONLY on the content in this file.]`,
         });
       } else {
+        // Plain text files (.txt, etc.)
         let textContent: string;
         try {
           textContent = atob(file.data);
@@ -110,7 +151,7 @@ serve(async (req) => {
           textContent = file.data;
         }
 
-        // Truncate very large documents (increased limit to 80k chars)
+        // Truncate very large documents
         if (textContent.length > 80000) {
           textContent =
             textContent.substring(0, 80000) +
@@ -126,7 +167,7 @@ serve(async (req) => {
 
     parts.push({
       type: "text",
-      text: "Please synthesize all the above notes into comprehensive study materials. Use the suggest_study_materials tool to return structured results.",
+      text: "Synthesize ONLY the content from the above uploaded files into study materials. Do NOT add any external information. Use the suggest_study_materials tool to return structured results.",
     });
 
     console.log(`Processing ${files.length} files, total parts: ${parts.length}`);
