@@ -19,8 +19,7 @@ NoteForge solves this by transforming messy notes into structured, synthesized s
 > Generate flashcards automatically
 > Create quizzes for self-assessment
 > Study smarter with AI-powered learning tools
-> https://github.com/user-attachments/assets/29c2aab0-6018-4c51-ad01-bee184f8272a
-
+https://github.com/user-attachments/assets/29c2aab0-6018-4c51-ad01-bee184f8272a
 ---
 
 ## Tech Stack
